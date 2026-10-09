@@ -1,0 +1,3824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MLBB Tournament Management System</title>
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #030a24;
+    color: white;
+    min-height: 100vh;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+input,
+select {
+    font-family: inherit;
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+#loginScreen {
+    min-height: 100vh;
+    display: flex;
+    background: #020819;
+}
+
+.login-left {
+    width: 50%;
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            rgba(3, 10, 35, .25),
+            rgba(3, 10, 35, .75)
+        ),
+        radial-gradient(
+            circle at center,
+            #172b77,
+            #020718 75%
+        );
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.login-poster {
+    max-width: 500px;
+}
+
+.shield {
+    width: 120px;
+    height: 120px;
+    margin: auto;
+    border-radius: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #07153d;
+    border: 5px solid #8b35ff;
+    box-shadow: 0 0 35px #7d29ff;
+
+    font-size: 60px;
+}
+
+.login-poster h1 {
+    font-size: 55px;
+    margin-top: 25px;
+    letter-spacing: 3px;
+}
+
+.login-poster h3 {
+    margin-top: 10px;
+    color: #b7c5ff;
+    letter-spacing: 2px;
+}
+
+.login-poster p {
+    margin-top: 30px;
+    font-size: 18px;
+    color: #ddd;
+}
+
+.game-names {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    font-weight: bold;
+    color: #8cb8ff;
+}
+
+
+.login-right {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.login-box {
+    width: 400px;
+    background: #07112f;
+    border: 1px solid #153d9d;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 0 30px rgba(0, 75, 255, .15);
+}
+
+.login-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #293558;
+}
+
+.login-tabs button {
+    width: 50%;
+    border: none;
+    background: transparent;
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+}
+
+.login-tabs button.active {
+    background: #2444e8;
+    border-radius: 8px;
+}
+
+.login-box label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 7px;
+    font-size: 12px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    background: #101c55;
+    border: 1px solid #1f3c9c;
+    color: white;
+    border-radius: 6px;
+    outline: none;
+}
+
+.login-button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 13px;
+    border: none;
+    border-radius: 7px;
+    background: #2146ed;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.login-button:hover {
+    background: #3158ff;
+}
+
+.remember {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 10px;
+    color: #aaa;
+}
+
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.socials button {
+    width: 60px;
+    height: 40px;
+    background: #101c55;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+
+/* =====================================================
+   MAIN APPLICATION
+===================================================== */
+
+#app {
+    display: none;
+}
+
+.sidebar {
+    width: 180px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    background: #020b27;
+    border-right: 2px solid #008dff;
+
+    padding: 20px 12px;
+
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    margin-bottom: 35px;
+}
+
+.logo-icon {
+    width: 35px;
+    height: 35px;
+
+    border-radius: 10px;
+    border: 2px solid #8d32ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 0 15px #7020d8;
+}
+
+.nav-button {
+    width: 100%;
+    padding: 11px 8px;
+
+    margin-bottom: 4px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: transparent;
+    color: white;
+
+    text-align: left;
+    font-size: 12px;
+
+    transition: .2s;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    background: #182c78;
+    color: white;
+}
+
+.admin {
+    position: absolute;
+    bottom: 25px;
+    left: 15px;
+    right: 15px;
+
+    border-top: 1px solid #33405e;
+    padding-top: 18px;
+
+    font-size: 11px;
+}
+
+.admin span {
+    color: #999;
+    display: block;
+    margin-top: 4px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content {
+    margin-left: 180px;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-title {
+    margin-bottom: 25px;
+}
+
+.page-title h1 {
+    font-size: 30px;
+}
+
+.page-title p {
+    color: #9ba8c9;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.primary {
+    background: #2147ed;
+    color: white;
+
+    border: none;
+    border-radius: 7px;
+
+    padding: 10px 17px;
+
+    font-weight: bold;
+}
+
+.primary:hover {
+    background: #315bff;
+}
+
+.danger {
+    background: #e32b43;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #182c83;
+    border: 1px solid #2946bd;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.stat-card small {
+    color: #aeb9df;
+}
+
+.stat-card h2 {
+    font-size: 27px;
+    margin: 8px 0;
+}
+
+.green {
+    color: #00ff55;
+    font-size: 11px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+}
+
+.panel {
+    background: #071333;
+    border: 1px solid #15407c;
+    border-radius: 8px;
+    padding: 18px;
+}
+
+.panel h2 {
+    margin-bottom: 15px;
+    font-size: 17px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.game-card {
+    height: 110px;
+    background: #101e4e;
+    border-radius: 5px;
+    border: 1px solid #20376e;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    font-weight: bold;
+}
+
+.game-card.mlbb {
+    background: linear-gradient(135deg, #134878, #101e4e);
+}
+
+.activity {
+    padding: 12px 0;
+    border-bottom: 1px solid #23335a;
+    font-size: 12px;
+}
+
+.match-mini {
+    padding: 15px 0;
+    border-bottom: 1px solid #26365c;
+    font-size: 12px;
+}
+
+.match-mini strong {
+    color: #5d8cff;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+
+/* =====================================================
+   TOURNAMENTS
+===================================================== */
+
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    border: none;
+    background: #07143c;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+
+.tabs button.active {
+    background: #2447ec;
+}
+
+.tournament-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.tournament-card {
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 8px;
+    overflow: hidden;
+    padding-bottom: 15px;
+}
+
+.tournament-image {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.tournament-image.v {
+    background: linear-gradient(135deg, #8b102a, #111b4c);
+}
+
+.tournament-image.m {
+    background: linear-gradient(135deg, #116190, #111b4c);
+}
+
+.tournament-image.c {
+    background: linear-gradient(135deg, #60591b, #111b4c);
+}
+
+.tournament-card h3,
+.tournament-card p {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.tournament-card h3 {
+    margin-top: 14px;
+}
+
+.tournament-card p {
+    color: #9ba8c9;
+    font-size: 11px;
+    margin-top: 7px;
+    margin-bottom: 12px;
+}
+
+.tournament-card button {
+    margin-left: 15px;
+}
+
+
+/* =====================================================
+   TEAMS
+===================================================== */
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.team-card {
+    background: #071333;
+    border: 1px solid #16396f;
+    border-radius: 8px;
+    padding: 22px;
+    text-align: center;
+}
+
+.team-logo {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+
+    background: #101b3e;
+    border: 1px solid #29498d;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 35px;
+    border-radius: 8px;
+}
+
+.team-card h3 {
+    margin-top: 12px;
+}
+
+.team-card p {
+    color: #9ba8c9;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.team-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+
+    font-size: 10px;
+}
+
+.active-text {
+    color: #00e842;
+}
+
+.team-card button {
+    background: #1d3fd0;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+
+/* =====================================================
+   MATCHES
+===================================================== */
+
+.match-card {
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 8px;
+    padding: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+.match-card:hover {
+    border-color: #3472ff;
+}
+
+.match-time {
+    width: 80px;
+    font-size: 12px;
+}
+
+.match-team {
+    flex: 1;
+    text-align: center;
+}
+
+.vs {
+    color: #7890c9;
+    margin: 0 20px;
+}
+
+.view-button {
+    background: #2345e4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+}
+
+
+/* =====================================================
+   TABLES
+===================================================== */
+
+.table-container {
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #1b2d53;
+    text-align: left;
+    font-size: 12px;
+}
+
+th {
+    background: #101d50;
+}
+
+tr:hover {
+    background: #0d1b45;
+}
+
+.status {
+    background: #00a71c;
+    padding: 5px 13px;
+    border-radius: 15px;
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search {
+    background: #071333;
+    border: 1px solid #23469d;
+    color: white;
+
+    padding: 10px;
+    border-radius: 6px;
+
+    width: 260px;
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   SCHEDULE
+===================================================== */
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+}
+
+.calendar {
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.calendar h2 {
+    margin-bottom: 20px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-days div {
+    padding: 13px 5px;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.calendar-days div:hover {
+    background: #19317c;
+}
+
+.calendar-days .selected {
+    background: #2447e8;
+}
+
+.events {
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.event {
+    border-bottom: 1px solid #26365c;
+    padding: 18px 5px;
+}
+
+.event-time {
+    color: #9eb4ff;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   REPORTS
+===================================================== */
+
+.report-tabs {
+    display: flex;
+    gap: 3px;
+    border-bottom: 2px solid #147bff;
+    margin-bottom: 20px;
+}
+
+.report-tabs button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 12px 15px;
+    font-weight: bold;
+}
+
+.report-tabs button.active {
+    background: #2845d7;
+    border-radius: 5px 5px 0 0;
+}
+
+.report-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.report-controls select {
+    background: #101d51;
+    border: 1px solid #1f3f91;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.quick-actions button {
+    background: #12286e;
+    border: 1px solid #2846aa;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 7px;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, .75);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 500;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: 420px;
+
+    background: #071333;
+    border: 1px solid #2866ff;
+
+    border-radius: 10px;
+    padding: 25px;
+
+    box-shadow: 0 0 30px rgba(0, 80, 255, .3);
+}
+
+.modal-box h2 {
+    margin-bottom: 20px;
+}
+
+.modal-box input,
+.modal-box select {
+    width: 100%;
+
+    background: #101e50;
+    border: 1px solid #284593;
+
+    color: white;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    margin-bottom: 12px;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   TEAM DETAILS
+===================================================== */
+
+.team-details-header {
+    background:
+        linear-gradient(
+            90deg,
+            #172f85,
+            #081330
+        );
+
+    border: 1px solid #2355b7;
+    border-radius: 8px;
+
+    padding: 25px;
+
+    margin-bottom: 20px;
+}
+
+.team-details-header h1 {
+    margin-bottom: 5px;
+}
+
+.team-details-header p {
+    color: #aeb9dc;
+}
+
+
+/* =====================================================
+   BRACKET
+===================================================== */
+
+.bracket {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    background: #071333;
+    border: 1px solid #173c78;
+    border-radius: 10px;
+
+    padding: 30px;
+    min-height: 500px;
+}
+
+.round {
+    flex: 1;
+}
+
+.round h3 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.bracket-match {
+    background: #0d1b4c;
+    border: 1px solid #29438a;
+    border-radius: 6px;
+
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.bracket-team {
+    padding: 10px;
+    border-bottom: 1px solid #283966;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.bracket-team:last-child {
+    border-bottom: none;
+}
+
+
+/* =====================================================
+   LIVE MATCH
+===================================================== */
+
+.scoreboard {
+    background:
+        linear-gradient(135deg, #0d1d50, #02091e);
+
+    border: 1px solid #2357b4;
+    border-radius: 10px;
+
+    padding: 40px;
+
+    text-align: center;
+}
+
+.score {
+    font-size: 55px;
+    font-weight: bold;
+    margin: 20px;
+}
+
+.live {
+    background: red;
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+.settings-box {
+    max-width: 600px;
+}
+
+.settings-box label {
+    display: block;
+    margin: 15px 0 7px;
+}
+
+.settings-box input {
+    width: 100%;
+    padding: 12px;
+
+    background: #101d50;
+    color: white;
+
+    border: 1px solid #25428f;
+    border-radius: 6px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width: 900px) {
+
+    .login-left {
+        display: none;
+    }
+
+    .login-right {
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 70px;
+    }
+
+    .logo span,
+    .nav-button span,
+    .admin {
+        display: none;
+    }
+
+    .content {
+        margin-left: 70px;
+    }
+
+    .stats,
+    .dashboard-grid,
+    .tournament-grid,
+    .team-grid,
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOGIN SCREEN
+===================================================== -->
+
+<div id="loginScreen">
+
+    <div class="login-left">
+
+        <div class="login-poster">
+
+            <div class="shield">
+                🛡️
+            </div>
+
+            <h1>MLBB ARENA</h1>
+
+            <h3>TOURNAMENT MANAGEMENT SYSTEM</h3>
+
+            <p>
+                PICK YOUR HERO • COMPETE • WIN
+            </p>
+
+            <div class="game-names">
+                <span>MOBILE LEGENDS: BANG BANG</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="login-right">
+
+        <div class="login-box">
+
+            <div class="login-tabs">
+
+                <button
+                    class="active"
+                    onclick="loginTab('login')"
+                    id="loginTab">
+                    Login
+                </button>
+
+                <button
+                    onclick="loginTab('signup')"
+                    id="signupTab">
+                    Sign Up
+                </button>
+
+            </div>
+
+
+            <div id="loginForm">
+
+                <label>Email or Username</label>
+
+                <input
+                    id="loginUsername"
+                    type="text"
+                    placeholder="Enter your email or username">
+
+
+                <label>Password</label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Enter your password">
+
+
+                <div class="remember">
+
+                    <span>
+                        ☑ Remember me
+                    </span>
+
+                    <span>
+                        Forgot password?
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="login-button"
+                    onclick="login()">
+
+                    Login
+
+                </button>
+
+
+                <p style="text-align:center;margin-top:12px;font-size:10px;color:#888">
+                    or continue with
+                </p>
+
+
+                <div class="socials">
+
+                    <button>G</button>
+                    <button>🎮</button>
+                    <button>f</button>
+
+                </div>
+
+
+                <p style="text-align:center;margin-top:20px;font-size:10px;color:#999">
+
+                    Don't have an account?
+
+                    <span
+                        style="color:#5082ff;cursor:pointer"
+                        onclick="loginTab('signup')">
+
+                        Sign Up
+
+                    </span>
+
+                </p>
+
+            </div>
+
+
+            <!-- SIGN UP -->
+
+            <div
+                id="signupForm"
+                style="display:none">
+
+                <label>Username</label>
+
+                <input
+                    id="signupUsername"
+                    type="text"
+                    placeholder="Create username">
+
+
+                <label>Email</label>
+
+                <input
+                    id="signupEmail"
+                    type="email"
+                    placeholder="Enter email">
+
+
+                <label>Password</label>
+
+                <input
+                    id="signupPassword"
+                    type="password"
+                    placeholder="Create password">
+
+
+                <label>Confirm Password</label>
+
+                <input
+                    id="signupConfirm"
+                    type="password"
+                    placeholder="Confirm password">
+
+
+                <button
+                    class="login-button"
+                    onclick="signup()">
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     APPLICATION
+===================================================== -->
+
+<div id="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                🛡️
+            </div>
+
+            <span>MLBB ARENA</span>
+
+        </div>
+
+
+        <button
+            class="nav-button active"
+            onclick="showPage('dashboard', this)">
+
+            🏠 <span>Dashboard</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('tournaments', this)">
+
+            🏆 <span>Tournaments</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('teams', this)">
+
+            👥 <span>Teams</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('matches', this)">
+
+            🎮 <span>Matches</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('standings', this)">
+
+            📊 <span>Standings</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('players', this)">
+
+            👤 <span>Players</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('schedule', this)">
+
+            📅 <span>Schedule</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('reports', this)">
+
+            📄 <span>Reports</span>
+
+        </button>
+
+
+        <button
+            class="nav-button"
+            onclick="showPage('settings', this)">
+
+            ⚙ <span>Settings</span>
+
+        </button>
+
+
+        <div class="admin">
+
+            🛡️ Admin
+
+            <span>Administrator</span>
+
+            <button
+                onclick="logout()"
+                style="
+                background:none;
+                border:none;
+                color:#ff5c6c;
+                margin-top:12px;
+                cursor:pointer;
+                ">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="content">
+
+
+        <!-- =================================================
+             DASHBOARD
+        ================================================= -->
+
+        <section
+            id="dashboard"
+            class="page active">
+
+            <div class="page-title">
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Overview of your esports tournaments
+                </p>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <small>Total Tournaments</small>
+
+                    <h2 id="totalTournaments">
+                        12
+                    </h2>
+
+                    <span class="green">
+                        ↗ +2 this week
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>Total Teams</small>
+
+                    <h2 id="totalTeams">
+                        48
+                    </h2>
+
+                    <span class="green">
+                        ↗ +4 this week
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>Total Players</small>
+
+                    <h2 id="totalPlayers">
+                        320
+                    </h2>
+
+                    <span class="green">
+                        ↗ +12 this week
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="dashboard-grid">
+
+
+                <div class="panel">
+
+                    <h2>
+                        Featured Games
+                    </h2>
+
+
+                    <div class="games mlbb-feature">
+                        <div class="game-card mlbb">
+                            ⚔️<br>MOBILE LEGENDS: BANG BANG<br><small>5v5 MOBA</small>
+                        </div>
+                    </div>
+
+
+                    <br>
+
+
+                    <h2>
+                        Recent Activity
+                    </h2>
+
+
+                    <div class="activity">
+                        🏆 Nick.ph against Omega
+                        <small style="float:right">
+                            1 hour ago
+                        </small>
+                    </div>
+
+                    <div class="activity">
+                        🎮 TLPH against AP.Bren
+                        <small style="float:right">
+                            4 hours ago
+                        </small>
+                    </div>
+
+                    <div class="activity">
+                        🏆 AP.Bren against Team Liquid PH
+                        <small style="float:right">
+                            6 hours ago
+                        </small>
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel">
+
+                    <h2>
+                        Upcoming Matches
+                    </h2>
+
+
+                    <div class="match-mini">
+
+                        <strong>7:00 PM</strong>
+
+                        <br><br>
+
+                        Smart Omega
+                        <b>VS</b>
+                        Twisted Minds
+
+                    </div>
+
+
+                    <div class="match-mini">
+
+                        <strong>8:00 PM</strong>
+
+                        <br><br>
+
+                        Midnight Owner
+                        <b>VS</b>
+                        4Kings
+
+                    </div>
+
+
+                    <div class="match-mini">
+
+                        <strong>9:00 PM</strong>
+
+                        <br><br>
+
+                        Fallen Empire
+                        <b>VS</b>
+                        Shigirai
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TOURNAMENTS
+        ================================================= -->
+
+        <section
+            id="tournaments"
+            class="page">
+
+            <div class="page-header">
+
+                <div class="page-title">
+
+                    <h1>Tournaments</h1>
+
+                    <p>
+                        Overview of your esports tournaments
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary"
+                    onclick="openModal('tournamentModal')">
+
+                    + Create Tournament
+
+                </button>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="active">
+                    All
+                </button>
+
+                <button>
+                    Ongoing
+                </button>
+
+                <button>
+                    Upcoming
+                </button>
+
+                <button>
+                    Completed
+                </button>
+
+            </div>
+
+
+            <div
+                class="tournament-grid"
+                id="tournamentList">
+
+
+                <div class="tournament-card">
+
+                    <div class="tournament-image v">
+                        MLBB
+                    </div>
+
+                    <h3>
+                        MLBB CHAMPIONSHIP
+                    </h3>
+
+                    <p>
+                        16 Teams • Oct 09 - Oct 24, 2026
+                    </p>
+
+                    <button
+                        class="primary"
+                        onclick="openBracket()">
+
+                        View Tournament
+
+                    </button>
+
+                </div>
+
+
+                <div class="tournament-card">
+
+                    <div class="tournament-image m">
+                        MOBILE LEGENDS
+                    </div>
+
+                    <h3>
+                        MLBB PRO LEAGUE
+                    </h3>
+
+                    <p>
+                        38 Teams • Nov 06 - Nov 18, 2026
+                    </p>
+
+                    <button
+                        class="primary">
+
+                        View Tournament
+
+                    </button>
+
+                </div>
+
+
+                <div class="tournament-card">
+
+                    <div class="tournament-image c">
+                        MOBILE LEGENDS
+                    </div>
+
+                    <h3>
+                        MLBB INVITATIONAL CUP
+                    </h3>
+
+                    <p>
+                        22 Teams • Dec 01 - Dec 21, 2026
+                    </p>
+
+                    <button
+                        class="primary">
+
+                        View Tournament
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TEAMS
+        ================================================= -->
+
+        <section
+            id="teams"
+            class="page">
+
+            <div class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Manage Teams
+                    </h1>
+
+                </div>
+
+
+                <button
+                    class="primary"
+                    onclick="openModal('teamModal')">
+
+                    + Add Team
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="team-grid"
+                id="teamList">
+
+
+                <div class="team-card">
+
+                    <div class="team-logo">
+                        🦅
+                    </div>
+
+                    <h3>
+                        ONIC Philippines
+                    </h3>
+
+                    <p>
+                        MLBB
+                    </p>
+
+                    <div class="team-info">
+
+                        <span>
+                            🟢 Players
+                        </span>
+
+                        <span class="active-text">
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        onclick="showTeamDetails('ONIC Philippines','MLBB')">
+
+                        View Details
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="team-card">
+
+                    <div class="team-logo">
+                        ⚔️
+                    </div>
+
+                    <h3>
+                        Blacklist International
+                    </h3>
+
+                    <p>
+                        Mobile Legends
+                    </p>
+
+                    <div class="team-info">
+
+                        <span>
+                            🟢 Players
+                        </span>
+
+                        <span class="active-text">
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        onclick="showTeamDetails('Blacklist International','Mobile Legends')">
+
+                        View Details
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="team-card">
+
+                    <div class="team-logo">
+                        🐝
+                    </div>
+
+                    <h3>
+                        AP Bren
+                    </h3>
+
+                    <p>
+                        Mobile Legends
+                    </p>
+
+                    <div class="team-info">
+
+                        <span>
+                            🟢 Players
+                        </span>
+
+                        <span class="active-text">
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        onclick="showTeamDetails('AP Bren','Mobile Legends')">
+
+                        View Details
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TEAM DETAILS
+        ================================================= -->
+
+        <section
+            id="teamDetails"
+            class="page">
+
+            <button
+                class="primary"
+                onclick="showPage('teams')">
+
+                ← Back to Teams
+
+            </button>
+
+
+            <br><br>
+
+
+            <div class="team-details-header">
+
+                <h1 id="detailTeamName">
+                    ONIC Philippines
+                </h1>
+
+                <p id="detailTeamGame">
+                    MLBB
+                </p>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <small>Ranking</small>
+
+                    <h2>#5</h2>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>Matches Played</small>
+
+                    <h2>23</h2>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>Win Rate</small>
+
+                    <h2>75%</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h2>
+                    Team Roster
+                </h2>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>1</td>
+                            <td>Karl</td>
+                            <td>Duelist</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Tyro</td>
+                            <td>Sentinel</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>Muzan</td>
+                            <td>Controller</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>Aqua</td>
+                            <td>Initiator</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>5</td>
+                            <td>Kent</td>
+                            <td>Smoker</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             MATCHES
+        ================================================= -->
+
+        <section
+            id="matches"
+            class="page">
+
+            <div class="page-title">
+
+                <h1>Matches</h1>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="active">
+                    Upcoming
+                </button>
+
+                <button>
+                    Live
+                </button>
+
+                <button>
+                    Finished
+                </button>
+
+            </div>
+
+
+            <div id="matchList">
+
+                <div class="match-card">
+
+                    <div class="match-time">
+                        7:00 PM
+                    </div>
+
+                    <div class="match-team">
+                        <b>MLBB</b>
+                        <br>
+                        Smart Omega
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="match-team">
+                        Twisted Minds
+                    </div>
+
+                    <button
+                        class="view-button"
+                        onclick="openLiveMatch()">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+                <div class="match-card">
+
+                    <div class="match-time">
+                        8:00 PM
+                    </div>
+
+                    <div class="match-team">
+                        <b>MLBB</b>
+                        <br>
+                        Midnight Owner
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="match-team">
+                        4Kings
+                    </div>
+
+                    <button
+                        class="view-button">
+
+                        View
+
+                    </button>
+
+                </div>
+
+
+                <div class="match-card">
+
+                    <div class="match-time">
+                        9:00 PM
+                    </div>
+
+                    <div class="match-team">
+                        <b>MLBB</b>
+                        <br>
+                        Fallen Empire
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="match-team">
+                        Shigirai
+                    </div>
+
+                    <button
+                        class="view-button">
+
+                        View
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LIVE MATCH
+        ================================================= -->
+
+        <section
+            id="liveMatch"
+            class="page">
+
+            <button
+                class="primary"
+                onclick="showPage('matches')">
+
+                ← Back to Matches
+
+            </button>
+
+
+            <br><br>
+
+
+            <div class="scoreboard">
+
+                <p>
+                    MLBB • BEST OF 3
+                </p>
+
+
+                <h2 style="margin-top:20px">
+                    Blacklist International
+                    &nbsp;&nbsp;&nbsp;
+                    VS
+                    &nbsp;&nbsp;&nbsp;
+                    AP.BREN
+                </h2>
+
+
+                <div class="score">
+                    1 - 1
+                </div>
+
+
+                <span class="live">
+                    LIVE
+                </span>
+
+
+                <p style="margin-top:20px">
+                    Map 3 - Ascent
+                </p>
+
+
+                <br>
+
+
+                <button
+                    class="primary"
+                    onclick="updateScore()">
+
+                    ⟳ Update Score
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STANDINGS
+        ================================================= -->
+
+        <section
+            id="standings"
+            class="page">
+
+            <div class="page-title">
+
+                <h1>
+                    Standings
+                </h1>
+
+            </div>
+
+
+            <input
+                class="search"
+                placeholder="🔍 Search team"
+                onkeyup="searchTable(this.value)">
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Team</th>
+                            <th>W</th>
+                            <th>L</th>
+                            <th>Pts</th>
+                            <th>Win Rate</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="standingsTable">
+
+                        <tr>
+                            <td>1</td>
+                            <td>Blacklist International</td>
+                            <td>10</td>
+                            <td>0</td>
+                            <td>10</td>
+                            <td>100%</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>AP.Bren</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>8</td>
+                            <td>80%</td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>Team Liquid PH</td>
+                            <td>7</td>
+                            <td>3</td>
+                            <td>7</td>
+                            <td>70%</td>
+                        </tr>
+
+                        <tr>
+                            <td>4</td>
+                            <td>ONIC Philippines</td>
+                            <td>6</td>
+                            <td>4</td>
+                            <td>6</td>
+                            <td>60%</td>
+                        </tr>
+
+                        <tr>
+                            <td>5</td>
+                            <td>Smart Omega</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>50%</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PLAYERS
+        ================================================= -->
+
+        <section
+            id="players"
+            class="page">
+
+            <div class="page-header">
+
+                <div class="page-title">
+
+                    <h1>
+                        Players
+                    </h1>
+
+                </div>
+
+
+                <button
+                    class="primary"
+                    onclick="openModal('playerModal')">
+
+                    + Add Player
+
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Player Name
+                            </th>
+
+                            <th>
+                                Team
+                            </th>
+
+                            <th>
+                                Game
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th>
+                                K/D
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="playerTable">
+
+                        <tr>
+                            <td>Kim Tae-oh</td>
+                            <td>Blacklist International</td>
+                            <td>MLBB</td>
+                            <td>Duelist</td>
+                            <td>1.31</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>Ham Woo-joo</td>
+                            <td>Blacklist International</td>
+                            <td>MLBB</td>
+                            <td>Controller</td>
+                            <td>1.11</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>Kim Gu-taek</td>
+                            <td>Blacklist International</td>
+                            <td>MLBB</td>
+                            <td>Initiator</td>
+                            <td>1.22</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                        <tr>
+                            <td>KarlTzy</td>
+                            <td>MLBB</td>
+                            <td>MLBB</td>
+                            <td>Jungle</td>
+                            <td>1.13</td>
+                            <td><span class="status">Active</span></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SCHEDULE
+        ================================================= -->
+
+        <section
+            id="schedule"
+            class="page">
+
+            <div class="page-title">
+
+                <h1>
+                    Schedule
+                </h1>
+
+            </div>
+
+
+            <div class="schedule-grid">
+
+
+                <div class="calendar">
+
+                    <h2>
+                        October 2026
+                    </h2>
+
+
+                    <div class="calendar-days">
+
+                        <div>Su</div>
+                        <div>Mo</div>
+                        <div>Tu</div>
+                        <div>We</div>
+                        <div>Th</div>
+                        <div>Fr</div>
+                        <div>Sa</div>
+
+
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div>1</div>
+                        <div>2</div>
+                        <div>3</div>
+
+                        <div>4</div>
+                        <div>5</div>
+                        <div>6</div>
+                        <div>7</div>
+                        <div>8</div>
+                        <div>9</div>
+                        <div>10</div>
+
+                        <div>11</div>
+                        <div>12</div>
+                        <div>13</div>
+                        <div>14</div>
+                        <div class="selected">15</div>
+                        <div>16</div>
+                        <div>17</div>
+
+                        <div>18</div>
+                        <div>19</div>
+                        <div>20</div>
+                        <div>21</div>
+                        <div>22</div>
+                        <div>23</div>
+                        <div>24</div>
+
+                        <div>25</div>
+                        <div>26</div>
+                        <div>27</div>
+                        <div>28</div>
+                        <div>29</div>
+                        <div>30</div>
+                        <div>31</div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="events">
+
+                    <h2>
+                        Events on October 15
+                    </h2>
+
+
+                    <div class="event">
+
+                        <div class="event-time">
+                            7:00 PM
+                        </div>
+
+                        MLBB Championship
+
+                    </div>
+
+
+                    <div class="event">
+
+                        <div class="event-time">
+                            8:30 PM
+                        </div>
+
+                        MLBB Match
+
+                    </div>
+
+
+                    <div class="event">
+
+                        <div class="event-time">
+                            10:00 PM
+                        </div>
+
+                        MLBB Main Event
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             REPORTS
+        ================================================= -->
+
+        <section
+            id="reports"
+            class="page">
+
+            <div class="page-title">
+
+                <h1>
+                    Reports
+                </h1>
+
+            </div>
+
+
+            <div class="report-tabs">
+
+                <button class="active">
+                    Tournament Report
+                </button>
+
+                <button>
+                    Team Report
+                </button>
+
+                <button>
+                    Player Report
+                </button>
+
+                <button>
+                    Match Report
+                </button>
+
+            </div>
+
+
+            <div class="report-controls">
+
+                <select>
+
+                    <option>
+                        MLBB Championship
+                    </option>
+
+                    <option>
+                        MLBB Pro League
+                    </option>
+
+                    <option>
+                        MLBB Elite Cup
+                    </option>
+
+                </select>
+
+
+                <select>
+
+                    <option>
+                        October 10 - October 25
+                    </option>
+
+                    <option>
+                        November 1 - November 15
+                    </option>
+
+                </select>
+
+
+                <button
+                    class="primary"
+                    onclick="generateReport()">
+
+                    Generate Report
+
+                </button>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <small>
+                        Total Matches
+                    </small>
+
+                    <h2>
+                        16
+                    </h2>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>
+                        Total Teams
+                    </small>
+
+                    <h2>
+                        8
+                    </h2>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>
+                        Total Players
+                    </small>
+
+                    <h2>
+                        64
+                    </h2>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <small>
+                        Average K.O
+                    </small>
+
+                    <h2>
+                        1.12
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+
+                <div class="quick-actions">
+
+                    <button onclick="alert('PDF export prepared!')">
+                        📄 Export PDF
+                    </button>
+
+                    <button onclick="alert('Excel export prepared!')">
+                        📊 Export Excel
+                    </button>
+
+                    <button onclick="shareReport()">
+                        🔗 Share Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             BRACKET
+        ================================================= -->
+
+        <section
+            id="bracket"
+            class="page">
+
+            <button
+                class="primary"
+                onclick="showPage('tournaments')">
+
+                ← Back
+
+            </button>
+
+
+            <br><br>
+
+
+            <div class="page-title">
+
+                <h1>
+                    MLBB CHAMPIONSHIP
+                </h1>
+
+            </div>
+
+
+            <div class="bracket">
+
+
+                <div class="round">
+
+                    <h3>
+                        Quarter Finals
+                    </h3>
+
+
+                    <div class="bracket-match">
+
+                        <div class="bracket-team">
+                            G2 Esports
+                            <b>2</b>
+                        </div>
+
+                        <div class="bracket-team">
+                            NRG
+                            <b>1</b>
+                        </div>
+
+                    </div>
+
+
+                    <div class="bracket-match">
+
+                        <div class="bracket-team">
+                            Team Liquid PH
+                            <b>0</b>
+                        </div>
+
+                        <div class="bracket-team">
+                            Global Esports
+                            <b>2</b>
+                        </div>
+
+                    </div>
+
+
+                    <div class="bracket-match">
+
+                        <div class="bracket-team">
+                            Team Liquid
+                            <b>2</b>
+                        </div>
+
+                        <div class="bracket-team">
+                            Team Vitality
+                            <b>0</b>
+                        </div>
+
+                    </div>
+
+
+                    <div class="bracket-match">
+
+                        <div class="bracket-team">
+                            Xi Lai Gaming
+                            <b>0</b>
+                        </div>
+
+                        <div class="bracket-team">
+                            TYLOO
+                            <b>2</b>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="round">
+
+                    <h3>
+                        Semi Finals
+                    </h3>
+
+
+                    <div style="margin-top:100px">
+
+                        <div class="bracket-match">
+
+                            <div class="bracket-team">
+                                G2 Esports
+                                <b>0</b>
+                            </div>
+
+                            <div class="bracket-team">
+                                Global Esports
+                                <b>3</b>
+                            </div>
+
+                        </div>
+
+
+                        <div class="bracket-match">
+
+                            <div class="bracket-team">
+                                Team Liquid
+                                <b>3</b>
+                            </div>
+
+                            <div class="bracket-team">
+                                TYLOO
+                                <b>1</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="round">
+
+                    <h3>
+                        Finals
+                    </h3>
+
+
+                    <div style="margin-top:180px">
+
+                        <div class="bracket-match">
+
+                            <div class="bracket-team">
+                                Global Esports
+                                <b>0</b>
+                            </div>
+
+                            <div class="bracket-team">
+                                Team Liquid
+                                <b>2</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SETTINGS
+        ================================================= -->
+
+        <section
+            id="settings"
+            class="page">
+
+            <div class="page-title">
+
+                <h1>
+                    Settings
+                </h1>
+
+                <p>
+                    Manage your system settings
+                </p>
+
+            </div>
+
+
+            <div class="panel settings-box">
+
+                <h2>
+                    System Settings
+                </h2>
+
+
+                <label>
+                    System Name
+                </label>
+
+                <input
+                    id="systemName"
+                    value="Esports Tournament Management System">
+
+
+                <label>
+                    Administrator Name
+                </label>
+
+                <input
+                    id="adminName"
+                    value="Iankenn Calain">
+
+
+                <br><br>
+
+
+                <button
+                    class="primary"
+                    onclick="saveSettings()">
+
+                    Save Settings
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =====================================================
+     MODALS
+===================================================== -->
+
+
+<!-- ADD TEAM -->
+
+<div
+    class="modal"
+    id="teamModal">
+
+    <div class="modal-box">
+
+        <span
+            class="close"
+            onclick="closeModal('teamModal')">
+
+            ×
+
+        </span>
+
+        <h2>
+            Add Team
+        </h2>
+
+
+        <input
+            id="newTeamName"
+            placeholder="Team Name">
+
+
+        <input
+            id="newTeamGame"
+            placeholder="Game">
+
+
+        <button
+            class="primary"
+            onclick="addTeam()">
+
+            Add Team
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ADD PLAYER -->
+
+<div
+    class="modal"
+    id="playerModal">
+
+    <div class="modal-box">
+
+        <span
+            class="close"
+            onclick="closeModal('playerModal')">
+
+            ×
+
+        </span>
+
+        <h2>
+            Add Player
+        </h2>
+
+
+        <input
+            id="newPlayerName"
+            placeholder="Player Name">
+
+
+        <input
+            id="newPlayerTeam"
+            placeholder="Team">
+
+
+        <input
+            id="newPlayerGame"
+            placeholder="Game">
+
+
+        <input
+            id="newPlayerRole"
+            placeholder="Role">
+
+
+        <button
+            class="primary"
+            onclick="addPlayer()">
+
+            Add Player
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- CREATE TOURNAMENT -->
+
+<div
+    class="modal"
+    id="tournamentModal">
+
+    <div class="modal-box">
+
+        <span
+            class="close"
+            onclick="closeModal('tournamentModal')">
+
+            ×
+
+        </span>
+
+        <h2>
+            Create Tournament
+        </h2>
+
+
+        <input
+            id="newTournamentName"
+            placeholder="Tournament Name">
+
+
+        <select id="newTournamentGame">
+
+            <option>
+                MLBB
+            </option>
+
+            <option>
+                Mobile Legends
+            </option>
+
+            <option>
+                Mobile Legends: Bang Bang
+            </option>
+
+        </select>
+
+
+        <input
+            id="newTournamentTeams"
+            type="number"
+            placeholder="Number of Teams">
+
+
+        <button
+            class="primary"
+            onclick="addTournament()">
+
+            Create Tournament
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function loginTab(type) {
+
+    let loginForm =
+        document.getElementById("loginForm");
+
+    let signupForm =
+        document.getElementById("signupForm");
+
+    let loginTab =
+        document.getElementById("loginTab");
+
+    let signupTab =
+        document.getElementById("signupTab");
+
+
+    if (type === "login") {
+
+        loginForm.style.display = "block";
+        signupForm.style.display = "none";
+
+        loginTab.classList.add("active");
+        signupTab.classList.remove("active");
+
+    } else {
+
+        loginForm.style.display = "none";
+        signupForm.style.display = "block";
+
+        signupTab.classList.add("active");
+        loginTab.classList.remove("active");
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGIN FUNCTION
+===================================================== */
+
+function login() {
+
+    let username =
+        document.getElementById("loginUsername").value;
+
+    let password =
+        document.getElementById("loginPassword").value;
+
+
+    if (username === "" || password === "") {
+
+        alert("Please enter your username and password.");
+
+        return;
+    }
+
+
+    document.getElementById("loginScreen").style.display = "none";
+
+    document.getElementById("app").style.display = "block";
+
+
+    localStorage.setItem(
+        "loggedIn",
+        "true"
+    );
+
+}
+
+
+/* =====================================================
+   SIGN UP
+===================================================== */
+
+function signup() {
+
+    let username =
+        document.getElementById("signupUsername").value;
+
+    let email =
+        document.getElementById("signupEmail").value;
+
+    let password =
+        document.getElementById("signupPassword").value;
+
+    let confirm =
+        document.getElementById("signupConfirm").value;
+
+
+    if (
+        username === "" ||
+        email === "" ||
+        password === "" ||
+        confirm === ""
+    ) {
+
+        alert("Please complete all fields.");
+
+        return;
+    }
+
+
+    if (password !== confirm) {
+
+        alert("Passwords do not match.");
+
+        return;
+    }
+
+
+    alert(
+        "Account created successfully!\n\n" +
+        "You can now login."
+    );
+
+
+    loginTab("login");
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    localStorage.removeItem("loggedIn");
+
+    location.reload();
+
+}
+
+
+/* =====================================================
+   PAGE NAVIGATION
+===================================================== */
+
+function showPage(pageName, button) {
+
+    document
+        .querySelectorAll(".page")
+        .forEach(function(page) {
+
+            page.classList.remove("active");
+
+        });
+
+
+    let page =
+        document.getElementById(pageName);
+
+    if (page) {
+
+        page.classList.add("active");
+
+    }
+
+
+    document
+        .querySelectorAll(".nav-button")
+        .forEach(function(btn) {
+
+            btn.classList.remove("active");
+
+        });
+
+
+    if (button) {
+
+        button.classList.add("active");
+
+    }
+
+}
+
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+function openModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.add("show");
+
+}
+
+
+function closeModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+/* =====================================================
+   ADD TEAM
+===================================================== */
+
+function addTeam() {
+
+    let name =
+        document.getElementById("newTeamName").value;
+
+    let game =
+        document.getElementById("newTeamGame").value;
+
+
+    if (name === "" || game === "") {
+
+        alert("Please complete all fields.");
+
+        return;
+
+    }
+
+
+    let teamList =
+        document.getElementById("teamList");
+
+
+    let card =
+        document.createElement("div");
+
+
+    card.className = "team-card";
+
+
+    card.innerHTML = `
+
+        <div class="team-logo">
+            🛡️
+        </div>
+
+        <h3>
+            ${name}
+        </h3>
+
+        <p>
+            ${game}
+        </p>
+
+        <div class="team-info">
+
+            <span>
+                🟢 Players
+            </span>
+
+            <span class="active-text">
+                Active
+            </span>
+
+        </div>
+
+        <button
+            onclick="showTeamDetails('${name}','${game}')">
+
+            View Details
+
+        </button>
+
+    `;
+
+
+    teamList.appendChild(card);
+
+
+    let total =
+        document.getElementById("totalTeams");
+
+
+    total.innerText =
+        parseInt(total.innerText) + 1;
+
+
+    document.getElementById("newTeamName").value = "";
+
+    document.getElementById("newTeamGame").value = "";
+
+
+    closeModal("teamModal");
+
+
+    alert(
+        name + " has been added successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   TEAM DETAILS
+===================================================== */
+
+function showTeamDetails(name, game) {
+
+    document.getElementById(
+        "detailTeamName"
+    ).innerText = name;
+
+
+    document.getElementById(
+        "detailTeamGame"
+    ).innerText = game;
+
+
+    showPage("teamDetails");
+
+}
+
+
+/* =====================================================
+   ADD PLAYER
+===================================================== */
+
+function addPlayer() {
+
+    let name =
+        document.getElementById("newPlayerName").value;
+
+    let team =
+        document.getElementById("newPlayerTeam").value;
+
+    let game =
+        document.getElementById("newPlayerGame").value;
+
+    let role =
+        document.getElementById("newPlayerRole").value;
+
+
+    if (
+        name === "" ||
+        team === "" ||
+        game === "" ||
+        role === ""
+    ) {
+
+        alert("Please complete all fields.");
+
+        return;
+
+    }
+
+
+    let table =
+        document.getElementById("playerTable");
+
+
+    let row =
+        table.insertRow();
+
+
+    row.innerHTML = `
+
+        <td>${name}</td>
+
+        <td>${team}</td>
+
+        <td>${game}</td>
+
+        <td>${role}</td>
+
+        <td>1.00</td>
+
+        <td>
+            <span class="status">
+                Active
+            </span>
+        </td>
+
+    `;
+
+
+    let total =
+        document.getElementById("totalPlayers");
+
+
+    total.innerText =
+        parseInt(total.innerText) + 1;
+
+
+    document.getElementById("newPlayerName").value = "";
+
+    document.getElementById("newPlayerTeam").value = "";
+
+    document.getElementById("newPlayerGame").value = "";
+
+    document.getElementById("newPlayerRole").value = "";
+
+
+    closeModal("playerModal");
+
+
+    alert(
+        name + " has been added successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   ADD TOURNAMENT
+===================================================== */
+
+function addTournament() {
+
+    let name =
+        document.getElementById(
+            "newTournamentName"
+        ).value;
+
+
+    let game =
+        document.getElementById(
+            "newTournamentGame"
+        ).value;
+
+
+    let teams =
+        document.getElementById(
+            "newTournamentTeams"
+        ).value;
+
+
+    if (
+        name === "" ||
+        teams === ""
+    ) {
+
+        alert("Please complete all fields.");
+
+        return;
+
+    }
+
+
+    let list =
+        document.getElementById(
+            "tournamentList"
+        );
+
+
+    let card =
+        document.createElement("div");
+
+
+    card.className =
+        "tournament-card";
+
+
+    card.innerHTML = `
+
+        <div class="tournament-image v">
+
+            ${game.toUpperCase()}
+
+        </div>
+
+
+        <h3>
+
+            ${name}
+
+        </h3>
+
+
+        <p>
+
+            ${teams} Teams • Newly Created
+
+        </p>
+
+
+        <button
+            class="primary"
+            onclick="openBracket()">
+
+            View Tournament
+
+        </button>
+
+    `;
+
+
+    list.appendChild(card);
+
+
+    let total =
+        document.getElementById(
+            "totalTournaments"
+        );
+
+
+    total.innerText =
+        parseInt(total.innerText) + 1;
+
+
+    document.getElementById(
+        "newTournamentName"
+    ).value = "";
+
+
+    document.getElementById(
+        "newTournamentTeams"
+    ).value = "";
+
+
+    closeModal(
+        "tournamentModal"
+    );
+
+
+    alert(
+        name + " created successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   LIVE MATCH
+===================================================== */
+
+function openLiveMatch() {
+
+    showPage("liveMatch");
+
+}
+
+
+function updateScore() {
+
+    alert(
+        "Score update panel opened.\n\n" +
+        "This is where the administrator " +
+        "can update the live score."
+    );
+
+}
+
+
+/* =====================================================
+   TOURNAMENT BRACKET
+===================================================== */
+
+function openBracket() {
+
+    showPage("bracket");
+
+}
+
+
+/* =====================================================
+   SEARCH STANDINGS
+===================================================== */
+
+function searchTable(value) {
+
+    let rows =
+        document
+            .getElementById("standingsTable")
+            .getElementsByTagName("tr");
+
+
+    value =
+        value.toLowerCase();
+
+
+    for (
+        let i = 0;
+        i < rows.length;
+        i++
+    ) {
+
+        let text =
+            rows[i]
+                .innerText
+                .toLowerCase();
+
+
+        if (text.includes(value)) {
+
+            rows[i].style.display = "";
+
+        } else {
+
+            rows[i].style.display = "none";
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   REPORT
+===================================================== */
+
+function generateReport() {
+
+    alert(
+        "Report generated successfully!\n\n" +
+        "Tournament statistics are ready."
+    );
+
+}
+
+
+function shareReport() {
+
+    navigator.clipboard
+        .writeText(
+            "Esports Tournament Report"
+        );
+
+    alert(
+        "Report link copied!"
+    );
+
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+function saveSettings() {
+
+    let systemName =
+        document.getElementById(
+            "systemName"
+        ).value;
+
+
+    let adminName =
+        document.getElementById(
+            "adminName"
+        ).value;
+
+
+    localStorage.setItem(
+        "systemName",
+        systemName
+    );
+
+
+    localStorage.setItem(
+        "adminName",
+        adminName
+    );
+
+
+    alert(
+        "Settings saved successfully!"
+    );
+
+}
+
+
+/* =====================================================
+   LOAD LOGIN STATE
+===================================================== */
+
+window.onload = function() {
+
+    let loggedIn =
+        localStorage.getItem(
+            "loggedIn"
+        );
+
+
+    if (loggedIn === "true") {
+
+        document.getElementById(
+            "loginScreen"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "app"
+        ).style.display = "block";
+
+    }
+
+};
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+window.onclick = function(event) {
+
+    if (
+        event.target.classList.contains("modal")
+    ) {
+
+        event.target.classList.remove("show");
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
